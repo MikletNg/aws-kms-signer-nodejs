@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ESNext"],
+    "types": ["node"],
+    "outDir": "dist",
+    "noEmit": true,
+    "declaration": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "sourceMap": true,
+    "inlineSources": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "preserveConstEnums": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "checkJs": true,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "declarationMap": true
+  },
+  "include": ["scripts/*.ts", "src/**/*.ts", "index.ts"],
+  "exclude": ["node_modules", "scripts/*.ts", "test/*.ts"],
+  "ts-node": {
+    "esm": true
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "name": "aws-kms-signer-nodejs",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "main": "./dist/node/bundle.cjs",
+  "module": "./dist/node/bundle.mjs",
+  "browser": "./dist/browser/bundle.js",
+  "scripts": {
+    "init": "rimraf dist && npm install",
+    "lint": "eslint . --cache --quiet --ignore-pattern 'dist/**/*'",
+    "lint:ts": "tsc --noEmit",
+    "lint:format": "prettier --check . --cache",
+    "prettier": "prettier --config .prettierrc \"**/*.ts\" --write",
+    "esbuild": "node build.mjs",
+    "build": "rimraf dist && npm run lint:ts && npm run esbuild"
+  },
+  "author": "MikletNg<iam@mikeng.io>",
+  "license": "MIT",
+  "devDependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
+    "@eslint/js": "^9.21.0",
+    "@types/node": "^22.13.8",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@typescript-eslint/parser": "^8.25.0",
+    "esbuild": "^0.25.0",
+    "eslint": "^9.21.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.25.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-kms": "^3.758.0",
+    "@peculiar/asn1-ecc": "^2.3.15",
+    "@peculiar/asn1-schema": "^2.3.15",
+    "asn1js": "^3.0.5",
+    "ethers": "^6.13.5",
+    "lodash": "^4.17.21",
+    "pkijs": "^3.2.4",
+    "tronweb": "^6.0.1",
+    "winston": "^3.17.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "node": "./dist/node/bundle.mjs",
+        "browser": "./dist/browser/bundle.mjs",
+        "default": "./dist/browser/bundle.mjs"
+      },
+      "require": {
+        "node": "./dist/node/bundle.cjs",
+        "browser": "./dist/browser/bundle.js",
+        "default": "./dist/node/bundle.cjs"
+      }
+    }
+  }
+}
