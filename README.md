@@ -14,14 +14,14 @@ A secure and efficient signer implementation for Ethereum and Tron networks usin
 ## Installation
 
 ```bash
-npm install aws-kms-signer
+npm install aws-kms-signer-nodejs
 ```
 
 ## Prerequisites
 
 - An AWS account with KMS access
 - AWS credentials configured in your environment
-- Node.js 16 or higher
+- Node.js 20 or higher
 
 ## Quick Start
 
