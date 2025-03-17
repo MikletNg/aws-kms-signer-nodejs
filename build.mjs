@@ -1,66 +1,37 @@
 import * as esbuild from "esbuild";
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
-import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
+import { glob } from "glob";
 
 const commonConfig = {
-  entryPoints: ["src/index.ts"],
-  bundle: true,
-  minify: true,
+  entryPoints: [...(await glob("src/**/*.ts"))],
+  bundle: false,
+  minify: false,
   sourcemap: true,
   target: ["es2020"],
+  outbase: "src",
 };
 
+// Build ESM version
 await esbuild.build({
   ...commonConfig,
-  outfile: "dist/node/bundle.mjs",
+  outdir: "dist/esm",
   platform: "node",
   format: "esm",
-  loader: {
-    ".node": "copy",
-  },
 });
 
+// Build CJS version
 await esbuild.build({
   ...commonConfig,
-  outfile: "dist/node/bundle.cjs",
+  outdir: "dist/cjs",
   platform: "node",
   format: "cjs",
-  loader: {
-    ".node": "copy",
-  },
 });
 
+// Generate TypeScript declaration files
 await esbuild.build({
   ...commonConfig,
-  outfile: "dist/browser/bundle.mjs",
-  platform: "browser",
+  outdir: "dist/types",
+  platform: "neutral",
   format: "esm",
-  define: {
-    global: "globalThis",
-  },
-  plugins: [
-    NodeGlobalsPolyfillPlugin({
-      process: true,
-      buffer: true,
-    }),
-    NodeModulesPolyfillPlugin(),
-  ],
-});
-
-await esbuild.build({
-  ...commonConfig,
-  outfile: "dist/browser/bundle.js",
-  platform: "browser",
-  format: "iife",
-  globalName: "AwsKmsSigner",
-  define: {
-    global: "globalThis",
-  },
-  plugins: [
-    NodeGlobalsPolyfillPlugin({
-      process: true,
-      buffer: true,
-    }),
-    NodeModulesPolyfillPlugin(),
-  ],
+  outExtension: { ".js": ".d.ts" },
+  metafile: true,
 });

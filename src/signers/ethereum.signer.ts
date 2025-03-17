@@ -68,43 +68,6 @@ export class EthereumSigner extends ethers.AbstractSigner {
     return ethers.getAddress(`0x${hash.slice(-40)}`);
   }
 
-  private async calculateRecoveryId(hash: string, r: Buffer, s: Buffer, unsignedTx: ethers.Transaction): Promise<number> {
-    const rHex = ethers.hexlify(r);
-    const sHex = ethers.hexlify(s);
-    if (unsignedTx.type === 2) {
-      const possibleV = [0, 1];
-      for (const v of possibleV) {
-        try {
-          const recovered = ethers.recoverAddress(hash, { r: rHex, s: sHex, v });
-          if (recovered.toLowerCase() === (await this.getAddress()).toLowerCase()) {
-            return v;
-          }
-        } catch {
-          continue;
-        }
-      }
-    } else {
-      const address = await this.getAddress();
-      for (const recovery of [0, 1]) {
-        try {
-          const signature = { r: rHex, s: sHex, v: recovery };
-          const recovered = ethers.recoverAddress(hash, signature);
-          if (recovered.toLowerCase() === address.toLowerCase()) {
-            const chainId = unsignedTx.chainId;
-            if (typeof chainId === "bigint" && chainId > 0n) {
-              return Number(35n + chainId * 2n + BigInt(recovery));
-            } else {
-              return 27 + recovery;
-            }
-          }
-        } catch {
-          continue;
-        }
-      }
-    }
-    throw new Error("Failed to determine recovery ID");
-  }
-
   async signTransaction(transaction: ethers.TransactionRequest): Promise<string> {
     const populatedTx = await this.populateTransaction(transaction);
     const unsignedTx = ethers.Transaction.from({ ...populatedTx, from: undefined });
@@ -114,11 +77,15 @@ export class EthereumSigner extends ethers.AbstractSigner {
     const signature = await signKmsSignature(Buffer.from(ethers.getBytes(hash)), this._keyId, this._kmsClient);
     const derBuffer = Buffer.from(signature);
     const { r, s } = derToRS(derBuffer);
-    if (unsignedTx.type === 2) {
-      for (const v of [0, 1]) {
+    if (unsignedTx.type === 1) {
+      const address = await this.getAddress();
+      for (const recovery of [0, 1]) {
         try {
-          const recovered = ethers.recoverAddress(hash, { r: ethers.hexlify(r), s: ethers.hexlify(s), v });
-          if (recovered.toLowerCase() === (await this.getAddress()).toLowerCase()) {
+          const signature = { r: ethers.hexlify(r), s: ethers.hexlify(s), v: recovery };
+          const recovered = ethers.recoverAddress(hash, signature);
+          if (recovered.toLowerCase() === address.toLowerCase()) {
+            const chainId = unsignedTx.chainId;
+            const v = typeof chainId === "bigint" && chainId > 0n ? Number(35n + chainId * 2n + BigInt(recovery)) : 27 + recovery;
             return ethers.Transaction.from({
               ...unsignedTx.toJSON(),
               signature: { r: ethers.hexlify(r), s: ethers.hexlify(s), v },
@@ -128,15 +95,11 @@ export class EthereumSigner extends ethers.AbstractSigner {
           continue;
         }
       }
-    } else {
-      const address = await this.getAddress();
-      for (const recovery of [0, 1]) {
+    } else if (unsignedTx.type === 2) {
+      for (const v of [0, 1]) {
         try {
-          const signature = { r: ethers.hexlify(r), s: ethers.hexlify(s), v: recovery };
-          const recovered = ethers.recoverAddress(hash, signature);
-          if (recovered.toLowerCase() === address.toLowerCase()) {
-            const chainId = unsignedTx.chainId;
-            const v = typeof chainId === "bigint" && chainId > 0n ? Number(35n + chainId * 2n + BigInt(recovery)) : 27 + recovery;
+          const recovered = ethers.recoverAddress(hash, { r: ethers.hexlify(r), s: ethers.hexlify(s), v });
+          if (recovered.toLowerCase() === (await this.getAddress()).toLowerCase()) {
             return ethers.Transaction.from({
               ...unsignedTx.toJSON(),
               signature: { r: ethers.hexlify(r), s: ethers.hexlify(s), v },
