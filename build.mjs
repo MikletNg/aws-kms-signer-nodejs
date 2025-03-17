@@ -3,7 +3,7 @@ import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfil
 import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
 
 const commonConfig = {
-  entryPoints: ["index.ts"],
+  entryPoints: ["src/index.ts"],
   bundle: true,
   minify: true,
   sourcemap: true,
