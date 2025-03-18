@@ -4,17 +4,8 @@ on:
   push:
     branches:
       - master
+      - develop
   workflow_dispatch:
-    inputs:
-      version_type:
-        description: "Version type (major, minor, patch)"
-        required: true
-        default: "patch"
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
 
 jobs:
   publish:
@@ -29,6 +20,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -57,37 +49,9 @@ jobs:
       - name: Build package
         run: npm run build
 
-      - name: Check if version update is needed
-        id: check_version
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "version_update=true" >> $GITHUB_OUTPUT
-          elif [ "${{ github.ref }}" = "refs/heads/master" ]; then
-            echo "version_update=true" >> $GITHUB_OUTPUT
-          else
-            echo "version_update=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Configure Git
-        if: steps.check_version.outputs.version_update == 'true'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-      - name: Update version
-        if: steps.check_version.outputs.version_update == 'true'
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            npm version ${{ inputs.version_type }} -m "chore: bump version to %s [skip ci]"
-          else
-            npm version patch -m "chore: bump version to %s [skip ci]"
-          fi
-
-      - name: Push version changes
-        if: steps.check_version.outputs.version_update == 'true'
-        run: git push && git push --tags
-
-      - name: Publish to NPM
-        run: npm publish
+      - name: Semantic Release
         env:
+          GITHUB_TOKEN: ${{ secrets._GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
