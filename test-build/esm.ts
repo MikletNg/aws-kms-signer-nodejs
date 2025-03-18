@@ -1,17 +1,12 @@
 import "dotenv/config";
-import { EthereumSigner } from "../dist/esm/index.js";
+import { EthereumSigner } from "../dist/types/src/signers/ethereum.signer.js";
 
 async function testEsmTs() {
   try {
-    const signer = new EthereumSigner(
-      {
-        keyId: process.env.KMS_KEY_ID,
-        rpcUrl: process.env.ETHEREUM_RPC_URL,
-      },
-      {
-        network: "testnet",
-      },
-    );
+    const signer = new EthereumSigner({
+      keyId: process.env.KMS_KEY_ID!,
+      rpcUrl: process.env.ETHEREUM_RPC_URL!,
+    });
 
     const address = await signer.getAddress();
     console.log("ESM TS Test - Address:", address);

@@ -7,5 +7,5 @@ export interface ICreateKmsClient {
 }
 
 export const createKmsClient = ({ region, credentials }: ICreateKmsClient) => {
-  return new KMSClient({ region, credentials });
+  return new KMSClient({ region: region || process.env.AWS_REGION || "us-east-1", credentials });
 };

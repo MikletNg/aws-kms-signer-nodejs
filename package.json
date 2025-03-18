@@ -1,11 +1,11 @@
 {
   "name": "aws-kms-signer-nodejs",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "AWS KMS Signer for Ethereum and Tron",
   "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/types/src/index.d.ts",
   "files": [
     "dist",
     "README.md",
@@ -80,7 +80,7 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
+      "types": "./dist/types/src/index.d.ts",
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
     }

@@ -3,15 +3,10 @@ import { EthereumSigner } from "../dist/cjs/index.js";
 
 async function testCjsTs() {
   try {
-    const signer = new EthereumSigner(
-      {
-        keyId: process.env.KMS_KEY_ID,
-        rpcUrl: process.env.ETHEREUM_RPC_URL,
-      },
-      {
-        network: "testnet",
-      },
-    );
+    const signer = new EthereumSigner({
+      keyId: process.env.KMS_KEY_ID!,
+      rpcUrl: process.env.ETHEREUM_RPC_URL!,
+    });
 
     const address = await signer.getAddress();
     console.log("CJS TS Test - Address:", address);
