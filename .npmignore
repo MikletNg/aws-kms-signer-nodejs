@@ -1,0 +1,32 @@
+# Source
+src/
+test/
+
+# Build
+build/
+coverage/
+
+# Config
+.github/
+.eslintrc*
+.prettierrc*
+jest.config.*
+tsconfig.json
+
+# Development
+.vscode/
+.idea/
+*.log
+.env*
+!.env.example
+
+# Test
+test-build/
+
+# Git
+.git/
+.gitignore
+
+# Misc
+.DS_Store
+*.pem 
