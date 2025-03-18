@@ -18,9 +18,7 @@ export interface ITronSignerConstructorParams {
 
 export interface ITronSignerConstructorOptions {
   network?: Network;
-  tronweb?: TypedTronWebClient;
   logger?: Logger;
-  host?: string;
   kmsClient?: KMSClient;
 }
 

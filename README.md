@@ -43,6 +43,7 @@ import { EthereumSigner } from "aws-kms-signer";
 // Initialize the signer
 const signer = new EthereumSigner({
   keyId: "your-kms-key-id",
+  rpcUrl: "any-ethereum-rpc-endpoint",
 });
 
 // Get the Ethereum address
@@ -94,33 +95,41 @@ const signedTx = await signer.signTransaction(transaction);
 #### Constructor
 
 ```typescript
-new EthereumSigner({
-  keyId: string,
-  network: Network,
-  provider: Provider,
-  logger: Logger,
-  kmsClient: KMSClient,
-});
+new EthereumSigner(
+  {
+    keyId: string,
+    rpcUrl: string,
+  },
+  {
+    network: Network,
+    provider: ethers.Provider,
+    logger: Logger,
+    kmsClient: KMSClient,
+  },
+);
 ```
 
 #### Methods
 
 - `getAddress(): Promise<string>`
 - `signMessage(message: string | Uint8Array): Promise<string>`
-- `signTransaction(transaction: TransactionRequest): Promise<string>`
+- `signTransaction(transaction: ethers.TransactionRequest): Promise<string>`
 
 ### TronSigner
 
 #### Constructor
 
 ```typescript
-new TronSigner({
-  keyId: string,
-  network: Network,
-  tronweb: TronWeb,
-  logger: Logger,
-  kmsClient: KMSClient,
-});
+new TronSigner(
+  {
+    keyId: string,
+  },
+  {
+    network: Network,
+    logger: Logger,
+    kmsClient: KMSClient,
+  },
+);
 ```
 
 #### Methods
@@ -128,7 +137,7 @@ new TronSigner({
 - `getAddress(): Promise<string>`
 - `signMessageV2(message: string | Uint8Array): Promise<string>`
 - `verifyMessageV2(message: string | Uint8Array, signature: string): Promise<string>`
-- `signTransaction(transaction: Transaction): Promise<SignedTransaction>`
+- `signTransaction(transaction: TronWebTypes.Transaction): Promise<TronWebTypes.SignedTransaction>`
 
 ## Security Considerations
 
